@@ -1,0 +1,10 @@
+.selectedTag {
+  display: inline-block;
+  border: 1px solid #ccc;
+  margin: 0px 6px;
+  padding: 3px;
+}
+
+.selectedTag > button {
+  margin-left: 3px;
+}

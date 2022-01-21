@@ -1,14 +1,7 @@
 import React, { useEffect, useMemo } from "react";
+import { SelectedTags } from "./SelectedTags";
 import styles from "./TaggedInput.module.css";
-
-//interface tag can be any object as long as it has an id
-interface ValidTag {
-  id: string | number;
-  value: string;
-}
-
-//any object that implements HasId can be a tag
-interface Tag extends ValidTag {}
+import { Tag } from "./types";
 
 interface Props {
   tags: Array<Tag>;
@@ -101,14 +94,10 @@ export const TaggedInput: React.FC<Props> = ({ tags, onChange }) => {
           isFocused ? styles.focused : ""
         }`}
       >
-        {selectedTags.map((tag, index) => {
-          return (
-            <span key={tag.id} className={styles.selectedTag}>
-              {tag.value}
-              <button onClick={() => handleRemoveTag(tag)}>x</button>
-            </span>
-          );
-        })}
+        <SelectedTags
+          onClickDelete={(tag) => handleRemoveTag(tag)}
+          tags={selectedTags}
+        />
         <input
           type="text"
           onChange={handleInputChange}
