@@ -1,0 +1,14 @@
+.disabledTag {
+  background-color: #ccc;
+  pointer-events: none;
+}
+
+.container {
+  overflow-y: scroll;
+  list-style: none;
+  max-height: 200px;
+  margin: 20px auto;
+  padding: 0;
+  text-align: center;
+  max-width: 300px;
+}

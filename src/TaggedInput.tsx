@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo } from "react";
 import { SelectedTags } from "./SelectedTags";
+import { Suggestions } from "./Suggestions";
 import styles from "./TaggedInput.module.css";
 import { Tag } from "./types";
 
@@ -17,10 +18,6 @@ export const TaggedInput: React.FC<Props> = ({ tags, onChange }) => {
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const val = event.target.value;
     //if value if empty and user tries backspace, remove last tag
-    if (val === "" && selectedTags.length > 0) {
-      setSelectedTags(selectedTags.slice(0, -1));
-      return;
-    }
     setInputValue(val);
   };
 
@@ -33,8 +30,8 @@ export const TaggedInput: React.FC<Props> = ({ tags, onChange }) => {
       return tag.value.toLowerCase().includes(inputValue.toLowerCase());
     };
 
-    return tags.filter(filterFunction).slice(0, 10);
-  }, [inputValue, tags]);
+    return tags.filter(filterFunction);
+  }, [inputValue]);
 
   const handleAddTag = (tag: Tag) => {
     const oldtags = new Set(selectedTags);
@@ -51,21 +48,20 @@ export const TaggedInput: React.FC<Props> = ({ tags, onChange }) => {
     onChange(newTags);
   };
 
-  const handleKeyUp = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    //if user presses backspace and input is empty, remove last tag
-    if (
-      event.key === "Backspace" &&
-      inputValue === "" &&
-      selectedTags.length > 0
-    ) {
-      if (selectedTags.length > 0) {
-        handleRemoveTag(selectedTags[selectedTags.length - 1]);
-      }
-    }
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
     //if filteredTags length is greater than zero and user presses enter, add tag
     if (filteredTags.length > 0 && event.key === "Enter") {
       handleAddTag(filteredTags[0]);
       setInputValue("");
+    }
+
+    //if filteredTags length is greater than zero and user presses backspace, remove last tag
+    if (
+      filteredTags.length > 0 &&
+      event.key === "Backspace" &&
+      inputValue === ""
+    ) {
+      handleRemoveTag(selectedTags[selectedTags.length - 1]);
     }
   };
 
@@ -88,7 +84,7 @@ export const TaggedInput: React.FC<Props> = ({ tags, onChange }) => {
   }, [isFocused]);
 
   return (
-    <div ref={containerRef}>
+    <div ref={containerRef} className={styles.container}>
       <div
         className={`${styles.inputContainer} ${
           isFocused ? styles.focused : ""
@@ -103,21 +99,16 @@ export const TaggedInput: React.FC<Props> = ({ tags, onChange }) => {
           onChange={handleInputChange}
           value={inputValue}
           className={styles.input}
-          onKeyUp={handleKeyUp}
           onFocus={handleFocus}
+          onKeyDown={handleKeyDown}
         />
       </div>
       {isFocused && (
-        <ul>
-          {filteredTags.map((tag) => (
-            <li
-              key={tag.id}
-              className={selectedTags.includes(tag) ? styles.disabledTag : ""}
-            >
-              {tag.value} <button onClick={() => handleAddTag(tag)}>+</button>
-            </li>
-          ))}
-        </ul>
+        <Suggestions
+          tags={filteredTags}
+          selectedTags={selectedTags}
+          onAddClick={(tag) => handleAddTag(tag)}
+        />
       )}
     </div>
   );

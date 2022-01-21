@@ -1,6 +1,8 @@
 /* remove all borders of input   */
 .input {
   border: none;
+  width: 100%;
+  flex: 1;
 }
 
 .input:focus,
@@ -11,15 +13,12 @@
 /*style it like a good material ui input*/
 .inputContainer {
   border: 1px solid #ccc;
-  display: inline-block;
   padding: 5px 10px;
+  display: flex;
+  max-width: 80%;
+  margin: 0 auto;
 }
 
 .focused {
   border-color: #999;
-}
-
-.disabledTag {
-  background-color: #ccc;
-  pointer-events: none;
 }
